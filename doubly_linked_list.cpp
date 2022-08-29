@@ -1,84 +1,89 @@
 #include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
 
 struct NODE {
     int data;
     struct NODE *next;
+    struct NODE *prev;
 };
 
-/* リストの先頭を指すポインタ */
-static struct NODE *head = NULL;
-
+// リストのNODEの初期化
 void init_list(struct NODE *list)
 {
-    list->next = NULL;
+    list->next = nullptr;
     list->data = 0;
 }
 
+// リストのdataの出力
 void print_list(struct NODE *list)
 {
-  struct NODE *p = list->next;
-  printf("print_list(): ");
+    struct NODE *p = list->next;
+    std::cout << "print_list(): ";
 
-//  std::cout << p << std::endl;
- 
-  while (p) {
-    printf("value(%d)->", p->data);
-    p = p->next;
-  }
- 
-  printf("NULL\n");
+    while (p) 
+    {
+        std::cout << p->data << ", ";
+        p = p->next;
+    } 
+    std::cout << "NULL" << std::endl;
 }
 
 // リストの末尾にnodeを追加する
-int add_to_end_list(int data)
+int add_to_end_list(struct NODE *list, int data)
 {
     struct NODE *new_node;
-    struct NODE *current_node;
-    struct NODE *previous_node;
+    struct NODE *current_node = list;
 
-    new_node = (struct NODE*)malloc(sizeof(struct NODE));
-    if(new_node == NULL)
+    new_node = new NODE;
+    if(new_node == nullptr)
     {
         return 1;
-    }   
-    new_node->data = data;
-    current_node = head;
+    }
 
+    while(current_node->next)
+    {
+        current_node = current_node -> next;
+    }
+
+    new_node->data = data;
     current_node->next = new_node;
-    new_node->next = NULL;
+    new_node->next = nullptr;
     return 0;
 
 }
 
-
-// nodeのデータ検索機能
-
-/*
-void search_data(int target_number)
+void clear_list(struct NODE *list)
 {
-    node = head;
-    int node_number = 0;
-
-    while(node != NULL)
-    {
-        if(node->number_data == target_number)
-        {
-            std::cout << "found target number" << std::endl;
-            std::cout << "node number = " << node_number << std::endl;
-        }
-        node_number++;
-        node = node->next;
-    }
+  struct NODE *prev = list->next;
+  struct NODE *node;
+ 
+  while (prev) {
+    node = prev->next;
+    free(prev);
+    prev = node;
+  }
+ 
+  init_list(list);
 }
-*/
 
 
 int main(void){
     struct NODE list;
     init_list(&list);
+
+    int list_size;
+    std::cout << "作成するリストのNODE数を入力してください" << std::endl;
+    std::cin >> list_size;
+    std::cout << "数値データを入力してください" << std::endl;
+    for(int i = 0; i < list_size; i++)
+    {
+        int node_data;
+        std::cout << i+1 << " : ";
+        std::cin >> node_data;
+        add_to_end_list(&list, node_data);
+    }
     print_list(&list);
-    //add_to_end_list(15);
+    clear_list(&list);
+    print_list(&list);
+
     return 0;
 }
